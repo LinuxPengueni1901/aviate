@@ -1,0 +1,204 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&display=swap');
+
+:root {
+    --bg: #05070B;
+    --surface: #0B0E14;
+    --surface-hover: #11151E;
+    --border: #161B26;
+    --border-focus: #222C3E;
+    --text-main: #E2E8F0;
+    --text-muted: #64748B;
+    --accent: #00A3FF;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--text-main);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    padding: 60px 40px;
+    letter-spacing: -0.2px;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Sidebar Navigation */
+.panel-sidebar h2 {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    margin-bottom: 40px;
+}
+
+.panel-sidebar ul {
+    list-style: none;
+}
+
+.panel-sidebar ul li {
+    margin-bottom: 4px;
+}
+
+.panel-sidebar ul li a {
+    color: var(--text-muted);
+    text-decoration: none;
+    display: block;
+    padding: 10px 12px;
+    font-weight: 400;
+    transition: color 0.15s, background-color 0.15s;
+}
+
+.panel-sidebar ul li a:hover, 
+.panel-sidebar ul li a.active {
+    color: var(--text-main);
+    background-color: var(--surface);
+}
+
+/* Main Content Area */
+.panel-main h1 {
+    font-size: 24px;
+    font-weight: 500;
+    color: #FFF;
+    margin-bottom: 6px;
+    letter-spacing: -0.5px;
+}
+
+.subtitle {
+    color: var(--text-muted);
+    font-size: 12px;
+    margin-bottom: 50px;
+}
+
+/* Grid Layouts */
+.lessons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.lesson-card {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+.lesson-card:hover {
+    border-color: var(--border-focus);
+    background-color: var(--surface-hover);
+}
+
+.lesson-card h3 {
+    font-size: 14px;
+    font-weight: 500;
+    color: #FFF;
+    margin-bottom: 12px;
+}
+
+.lesson-card p {
+    color: var(--text-muted);
+    font-size: 12px;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+/* Controls & Inputs */
+.input-group {
+    margin-bottom: 30px;
+}
+
+.input-group label {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: 10px;
+}
+
+input[type="text"] {
+    width: 100%;
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    color: #FFF;
+    padding: 14px;
+    font-family: inherit;
+    font-size: 13px;
+    transition: border-color 0.2s;
+}
+
+input[type="text"]:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.btn-launch {
+    display: inline-block;
+    background-color: transparent;
+    color: var(--text-main);
+    border: 1px solid var(--border);
+    padding: 12px 24px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+    width: fit-content;
+}
+
+.btn-launch:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+/* Interactive Info Boxes */
+.info-box {
+    margin-top: 50px;
+    border-top: 1px solid var(--border);
+    padding-top: 30px;
+}
+
+.info-box h2 {
+    font-size: 15px;
+    font-weight: 500;
+    color: #FFF;
+    margin-bottom: 12px;
+}
+
+/* Data Display Tables */
+.data-table {
+    display: flex;
+    flex-direction: column;
+}
+
+.table-row {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.table-label {
+    color: var(--text-muted);
+}
+
+.table-value {
+    color: var(--text-main);
+}
