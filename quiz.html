@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aviate // Eğitim Quizi</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .quiz-container {
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            padding: 4px 0;
+            margin-top: 30px;
+        }
+        .question-box {
+            padding: 30px;
+            border-bottom: 1px solid var(--border);
+        }
+        .question-text {
+            font-size: 14px;
+            font-weight: 500;
+            color: #FFF;
+            margin-bottom: 20px;
+        }
+        .options-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .option-label {
+            background-color: var(--bg);
+            border: 1px solid var(--border);
+            padding: 14px;
+            cursor: pointer;
+            transition: background-color 0.15s, border-color 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .option-label:hover {
+            border-color: var(--border-focus);
+            background-color: var(--surface-hover);
+        }
+        .option-label input[type="radio"] {
+            accent-color: var(--accent);
+        }
+        .quiz-actions {
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .score-box {
+            display: none;
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            padding: 40px;
+            margin-top: 30px;
+        }
+        .score-box h2 {
+            font-size: 28px;
+            color: var(--accent);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .score-box p {
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+        
+        /* DOĞRU / YANLIŞ CEVAP RENK DURUMLARI */
+        .option-label.correct-choice {
+            border-color: #10B981 !important; /* Yeşil */
+            background-color: rgba(16, 185, 129, 0.05) !important;
+            color: #10B981 !important;
+        }
+        .option-label.wrong-choice {
+            border-color: #EF4444 !important; /* Kırmızı */
+            background-color: rgba(239, 68, 68, 0.05) !important;
+            color: #EF4444 !important;
+        }
+        /* Kontrol edildikten sonra tıklamaları engellemek için */
+        .disabled-options {
+            pointer-events: none;
+        }
+
+        /* HATA ANALİZ RAPORU TASARIMI */
+        .error-log-container {
+            margin-top: 30px;
+            border-top: 1px solid var(--border);
+            padding-top: 30px;
+        }
+        .error-card {
+            background-color: var(--bg);
+            border-left: 3px solid #EF4444;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        .error-q-text {
+            font-weight: 500;
+            color: #FFF;
+            margin-bottom: 10px;
+        }
+        .error-details {
+            font-size: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .your-ans { color: #EF4444; }
+        .corr-ans { color: #10B981; }
+    </style>
+</head>
+<body>
+
+    <div class="grid-container">
+        <nav class="panel-sidebar">
+            <h2>Aviate Systems</h2>
+            <ul>
+                <li><a href="index.html">Dashboard</a></li>
+                <li><a href="cockpit.html">Kokpit Okuryazarlığı</a></li>
+                <li><a href="metar.html">METAR Çözücü</a></li>
+                <li><a href="radio.html">Telsiz Jargonu</a></li>
+                <li><a href="numbers.html">Sayı Telaffuzları</a></li>
+                <li><a href="quiz.html" class="active">Eğitim Quizi</a></li>
+            </ul>
+        </nav>
+
+        <main class="panel-main">
+            <h1>Havacılık Bilgisi Değerlendirme Testi</h1>
+            <p class="subtitle">100 soruluk operasyonel veri havuzundan rastgele seçilen 10 soruluk telemetri testi.</p>
+
+            <!-- Quiz Arayüzü -->
+            <div id="quiz-wrapper" class="quiz-container">
+                <div id="question-area">
+                    <!-- JavaScript dinamik olarak burayı dolduracak -->
+                </div>
+                <div class="quiz-actions">
+                    <span id="quiz-progress" style="color: var(--text-muted);">Soru: 1 / 10</span>
+                    <button class="btn-launch" id="btn-next" onclick="handleQuizAction()">Cevabı Kontrol Et</button>
+                </div>
+            </div>
+
+            <!-- Sonuç Ekranı -->
+            <div id="result-wrapper" class="score-box">
+                <h2>Sınav Tamamlandı!</h2>
+                <div style="text-align: center;">
+                    <p id="score-text" style="margin-bottom: 30px; font-size: 16px; color: #FFF;"></p>
+                    <button class="btn-launch" onclick="startQuiz()" style="margin-bottom: 20px;">Yeniden Başlat (Yeni Sorular)</button>
+                </div>
+
+                <!-- Dinamik Yanlış Sorular Raporu Bölümü -->
+                <div id="error-log-section" class="error-log-container" style="display: none;">
+                    <h3 style="color: #FFF; font-size: 14px; margin-bottom: 15px; font-weight: 500;">Hata Analiz Raporu</h3>
+                    <div id="error-cards-wrapper"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // 100 Soruluk Devasa Havuz (Kokpit, METAR, Telsiz, Sayılar)
+        const questionBank = [
+            { q: "Pitot tüpü dinamik basıncı ile statik hat farkını hangi gösterge işler?", a: ["Altimeter", "Airspeed Indicator", "Vertical Speed Indicator", "Attitude Indicator"], c: 1 },
+            { q: "METAR raporundaki 'CAVOK' ne anlama gelir?", a: ["Kritik Hava Şartı", "Yoğun Kar Yağışı", "Görüş Açık, Bulut Yok", "Düşük Görüş Limiti"], c: 2 },
+            { q: "Telsiz konuşmalarında 'WILCO' kısaltmasının tam açılım mantığı nedir?", a: ["Will Comply", "With Compliments", "Wireless Control", "Wind Condition"], c: 0 },
+            { q: "Havacılıkta 9 sayısı parazit engellemek için nasıl telaffuz edilir?", a: ["Nine", "Nein", "Niner", "Nai-ne"], c: 2 },
+            { q: "Ortam barometrik basıncını referans alarak feet cinsinden yükseklik üreten cihaz hangisidir?", a: ["ASI", "VSI", "Altimeter", "Gyro"], c: 2 },
+            { q: "Uçağın dikey tırmanma ve alçalma oranını ft/min olarak gösteren cihaz hangisidir?", a: ["Altimeter", "Vertical Speed Indicator", "Airspeed Indicator", "Heading Indicator"], c: 1 },
+            { q: "'ROGER' telsiz kalıbı aşağıdakilerden hangisini taahhüt eder?", a: ["Talimatı uygulayacağım", "Mesajı sorunsuz kopyaladım", "Piste giriyorum", "Acil durum var"], c: 1 },
+            { q: "Kalkış veya iniş onayını belirtmek için kule hangi terimi kullanır?", a: ["Cleared", "Roger", "Wilco", "Approved"], c: 0 },
+            { q: "Piste girip kalkış pozisyonu alıp bekleme talimatı hangisidir?", a: ["Hold Short", "Line Up and Wait", "Cleared for Takeoff", "Taxi to Position"], c: 1 },
+            { q: "Mutlak acil durum ve hayati tehlike çağrısı hangisidir?", a: ["PAN PAN", "SECURITE", "MAYDAY", "BREAK BREAK"], c: 2 },
+            { q: "Hayati olmayan ama aciliyet gerektiren durum (arıza vb.) çağrısı hangisidir?", a: ["MAYDAY", "PAN PAN", "WILCO", "ROGER"], c: 1 },
+            { q: "Havacılıkta 3 sayısı frekansta nasıl okunur?", a: ["Three", "Tree", "Tiri", "Tri-o"], c: 1 },
+            { q: "Havacılıkta 5 sayısı nasıl telaffuz edilir?", a: ["Five", "Faiv", "Fife", "Fay-ve"], c: 2 },
+            { q: "METAR kodunda '18012KT' neyi ifade eder?", a: ["180 Knot sürat", "120 dereceden 18 Knot rüzgar", "180 dereceden 12 Knot rüzgar", "180 metre görüş"], c: 2 },
+            { q: "METAR kodunda '23018G25KT' ifadesindeki 'G' neyi temsil eder?", a: ["Bulut tavanı", "Hamleli rüzgar (Gust)", "Görüş mesafesi", "Coğrafi yön"], c: 1 },
+            { q: "Telsiz mesajı anlaşılamadığında tekrar istemek için ne denir?", a: ["Repeat please", "What did you say", "Say again", "Unable"], c: 2 },
+            { q: "Talimatın emniyetle uygulanamayacağını belirtmek için hangi kelime kullanılır?", a: ["Hold", "Unable", "Cancel", "Wilco"], c: 1 },
+            { q: "NATO Fonetik Alfabesinde 'A' harfi nedir?", a: ["Apple", "Alpha", "Anton", "Athens"], c: 1 },
+            { q: "NATO Fonetik Alfabesinde 'B' harfi nedir?", a: ["Boston", "Baker", "Bravo", "Berlin"], c: 2 },
+            { q: "NATO Fonetik Alfabesinde 'C' harfi nedir?", a: ["Charlie", "Coco", "Canada", "Center"], c: 0 },
+            { q: "NATO Fonetik Alfabesinde 'D' harfi nedir?", a: ["Doctor", "Delta", "Denmark", "Dallas"], c: 1 },
+            { q: "NATO Fonetik Alfabesinde 'E' harfi nedir?", a: ["Echo", "Eagle", "Euro", "Egypt"], c: 0 },
+            { q: "NATO Fonetik Alfabesinde 'F' harfi nedir?", a: ["Fox", "France", "Foxtrot", "Florida"], c: 2 },
+            { q: "NATO Fonetik Alfabesinde 'G' harfi nedir?", a: ["Germany", "Golf", "George", "Giant"], c: 1 },
+            { q: "NATO Fonetik Alfabesinde 'H' harfi nedir?", a: ["Hotel", "Henry", "Home", "Houston"], c: 0 },
+            { q: "NATO Fonetik Alfabesinde 'I' harfi nedir?", a: ["Italy", "Ice", "India", "Isaac"], c: 2 },
+            { q: "NATO Fonetik Alfabesinde 'J' harfi nedir?", a: ["John", "Juliett", "Japan", "Jupiter"], c: 1 },
+            { q: "NATO Fonetik Alfabesinde 'K' harfi nedir?", a: ["King", "Kilo", "Kentucky", "Korea"], c: 1 },
+            { q: "NATO Fonetik Alfabesinde 'L' harfi nedir?", a: ["London", "Lima", "Lemon", "Love"], c: 1 },
+            { q: "NATO Fonetik Alfabesinde 'M' harfi nedir?", a: ["Mexico", "Mother", "Mike", "Miami"], c: 2 },
+            { q: "NATO Fonetik Alfabesinde 'N' harfi nedir?", a: ["New York", "November", "Nancy", "Norway"], c: 1 },
+            { q: "NATO Fonetik Alfabesinde 'O' harfi nedir?", a: ["Oscar", "Ocean", "Orange", "Ohio"], c: 0 },
+            { q: "NATO Fonetik Alfabesinde 'P' harfi nedir?", a: ["Peter", "Paris", "Papa", "Pacific"], c: 2 },
+            { q: "NATO Fonetik Alfabesinde 'Q' harfi nedir?", a: ["Queen", "Quebec", "Qatar", "Quick"], c: 1 },
+            { q: "NATO Fonetik Alfabesinde 'R' harfi nedir?", a: ["Radio", "Romeo", "Robert", "Russia"], c: 1 },
+            { q: "NATO Fonetik Alfabesinde 'S' harfi nedir?", a: ["Sugar", "Sierra", "Spain", "Seattle"], c: 1 },
+            { q: "NATO Fonetik Alfabesinde 'T' harfi nedir?", a: ["Tommy", "Texas", "Tango", "Tokyo"], c: 2 },
+            { q: "NATO Fonetik Alfabesinde 'U' harfi nedir?", a: ["Uniform", "Union", "Uncle", "Utah"], c: 0 },
+            { q: "NATO Fonetik Alfabesinde 'V' harfi nedir?", a: ["Victor", "Video", "Venice", "Vienna"], c: 0 },
+            { q: "NATO Fonetik Alfabesinde 'W' harfi nedir?", a: ["Washington", "Whiskey", "Water", "William"], c: 1 },
+            { q: "NATO Fonetik Alfabesinde 'X' harfi nedir?", a: ["Xerox", "X-ray", "Xenon", "Xmas"], c: 1 },
+            { q: "NATO Fonetik Alfabesinde 'Y' harfi nedir?", a: ["Yellow", "Yankee", "Yokohama", "Young"], c: 1 },
+            { q: "NATO Fonetik Alfabesinde 'Z' harfi nedir?", a: ["Zebra", "Zulu", "Zurich", "Zero"], c: 1 },
+            { q: "METAR raporundaki '9999' ifadesi neyi belirtir?", a: ["9999 feet yükseklik", "Sonsuz rüzgar hızı", "10 KM veya üzeri görüş", "Havalimanı kapalı"], c: 2 },
+            { q: "Havacılıkta '10,000' sayısı nasıl okunur?", a: ["Ten thousand", "Wun Zero Tou-sand", "Wun Tou-sand Zero", "Ten Zero Zero Zero"], c: 1 },
+            { q: "Havacılıkta '1,000' sayısı telsizde nasıl seslendirilir?", a: ["One thousand", "Wun Tou-sand", "Wun Zero", "One triple zero"], c: 1 },
+            { q: "METAR'da 'BKN020' ne anlama gelir?", a: ["2000 feette az bulutlu", "200 feette çok bulutlu", "2000 feette çok bulutlu (Broken)", "20.000 feette kapalı"], c: 2 },
+            { q: "METAR'da 'FEW030' ne anlama gelir?", a: ["3000 feette az bulutlu", "300 feette parçalı bulutlu", "30.000 feette az bulutlu", "Görüş açık"], c: 0 },
+            { q: "METAR'da 'OVC015' ne anlama gelir?", a: ["150 feette bulut yok", "1500 feette kapalı bulut katmanı", "15.000 feette parçalı bulutlu", "Hava yağışlı"], c: 1 },
+            { q: "Altimetre QNH basınç değeri hangi harfle raporlanır?", a: ["A", "P", "Q", "B"], c: 2 },
+            { q: "Amerikan altimetre cıva inç (inHg) değeri hangi harfle başlar?", a: ["Q", "A", "I", "M"], c: 1 },
+            { q: "METAR'da '15/10' ifadesi sırasıyla neyi verir?", a: ["Rüzgar/Görüş", "Sıcaklık/İşba Noktası", "Basınç/Nem", "Tarih/Saat"], c: 1 },
+            { q: "METAR sıcaklık değerinde 'M02' ne anlama gelir?", a: ["Sıcaklık Ölçülemedi", "Sıcaklık 2 Derece", "Sıcaklık Eksi 2 Derece (-2°C)", "Maksimum 2 Derece"], c: 2 },
+            { q: "METAR'da 'FG' kısaltması hangi hava olayını belirtir?", a: ["Yağmur", "Sis (Fog)", "Pus", "Kar"], c: 1 },
+            { q: "METAR'da 'BR' kısaltması hangi hava olayını belirtir?", a: ["Puslu (Mist)", "Fırtına", "Dolu", "Toz Fırtınası"], c: 0 },
+            { q: "METAR'da 'TS' kısaltması ne anlama gelir?", a: ["Kar Sağanağı", "Gökgürültülü Fırtına (Thunderstorm)", "Sakin Rüzgar", "Sıcaklık Değişimi"], c: 1 },
+            { q: "METAR'da 'RA' kısaltması ne anlama gelir?", a: ["Yağmurlu (Rain)", "Dolu", "Sis", "Bulutlu"], c: 0 },
+            { q: "METAR'da '+RA' ne anlama gelir?", a: ["Hafif Yağmurlu", "Şiddetli Yağmurlu", "Yağmur Başlangıcı", "Sağanak Kar"], c: 1 },
+            { q: "METAR'da '-SN' ne anlama gelir?", a: ["Şiddetli Karlı", "Hafif Karlı", "Karsız Hava", "Karla Karışık Yağmur"], c: 1 },
+            { q: "METAR zaman damgasındaki '251230Z' ifadesinde '25' neyi belirtir?", a: ["Yılın 25. haftası", "Ayın 25. günü", "Saat 25", "Uçuş kodu"], c: 1 },
+            { q: "Transponder cihazında acil durum 'Squawk' kodu kural olarak tek tek nasıl okunur?", a: ["Toplu yüzlük gruplarla", "Tek tek basamak halinde", "Sadece ilk iki hanesi", "İngilizce normal sayı şeklinde"], c: 1 },
+            { q: "Havacılıkta 4 sayısı nasıl telaffuz edilir?", a: ["Four", "For", "Fow-er", "Fo-ri"], c: 2 },
+            { q: "Havacılıkta 0 sayısı nasıl telaffuz edilir?", a: ["O", "Zero", "Ze-ro", "Nil"], c: 2 },
+            { q: "Havacılıkta 7 sayısı nasıl telaffuz edilir?", a: ["Seven", "Sev-en", "Siven", "Se-ve"], c: 1 },
+            { q: "Mevcut pozisyonu veya rotayı koruma talimatı hangisidir?", a: ["Cleared", "Hold", "Unable", "Roger"], c: 1 },
+            { q: "Uçuş Seviyesi (Flight Level) 230 telsizde nasıl söylenir?", a: ["Two hundred thirty", "Flight Level Too Tree Zero", "Flight Level Twenty Three", "Two Tree Zero Feet"], c: 1 },
+            { q: "Pist numarası 'Runway 09' nasıl okunur?", a: ["Runway Nine", "Runway Zero Niner", "Runway Oh Nine", "Runway Zero Nine"], c: 1 },
+            { q: "Havacılıkta 2 sayısı nasıl telaffuz edilir?", a: ["Two", "Too", "Tu", "To-o"], c: 1 },
+            { q: "Havacılıkta 8 sayısı nasıl telaffuz edilir?", a: ["Eight", "Ait", "Eyt", "Ey-ti"], c: 1 },
+            { q: "Pitot-statik sistemde sadece dinamik basınç tıkanırsa hangi alet doğrudan etkilenir?", a: ["Altimeter", "VSI", "Airspeed Indicator", "Attitude Indicator"], c: 2 },
+            { q: "Statik delikler tamamen tıkanırsa altimetre nasıl davranır?", a: ["Sürekli yükselir", "Sıfıra düşer", "Tıkandığı irtifada sabit kalır", "Dalgalanma yapar"], c: 2 },
+            { q: "VSI cihazı dikey eksen hızını ölçmek için neyi kullanır?", a: ["Sıcaklık farkını", "Statik hücredeki kontrollü basınç sızıntısını", "Pitot tüpü havasını", "Jiroskop dönüş hızını"], c: 1 },
+            { q: "METAR'da 'VRB02KT' ne anlama gelir?", a: ["Rüzgar çok şiddetli", "Değişken yönlerden 2 Knot rüzgar", "Hız sabitleyici aktif", "Görüş sınırı 2 mil"], c: 1 },
+            { q: "Altimetre göstergeleri dikey dokümantasyonu hangi birim üzerinden sağlar?", a: ["Metre", "Feet", "Mil", "İnç"], c: 1 },
+            { q: "VSI göstergesinin birimi nedir?", a: ["Knot", "ft/min", "hPa", "inHg"], c: 1 },
+            { q: "Uçağın havaya göre olan relatif süratini üreten gösterge hangisidir?", a: ["VSI", "ALT", "ASI", "Heading"], c: 2 },
+            { q: "METAR raporları genel olarak hangi periyotlarla yayınlanır?", a: ["Haftalık", "24 saatte bir", "Rutin saatlik veya yarım saatlik", "Sadece fırtınalarda"], c: 2 },
+            { q: "METAR'da 'SHRA' ne anlama gelir?", a: ["Sağanak Yağışlı", "Kar Yağışlı", "Dolu Yağışlı", "Kuru Hava"], c: 0 },
+            { q: "METAR'da 'VV002' ifadesi neyi belirtir?", a: ["200 Knot rüzgar", "2000 metre görüş", "200 feet dikey görüş (Vertical Visibility)", "Bulut katmanı yok"], c: 2 },
+            { q: "Sayı telaffuzlarında 13,000 sayısı nasıl söylenir?", a: ["Thirteen thousand", "Wun Tree Tou-sand", "Wun Tree Zero Zero Zero", "Thirteen Tou-sand"], c: 1 },
+            { q: "Sayı telaffuzlarında 25,000 sayısı nasıl söylenir?", a: ["Twenty five thousand", "Too Fife Tou-sand", "Too Five Zero Zero", "Twenty Fife"], c: 1 },
+            { q: "Sayı telaffuzlarında 5,000 sayısı nasıl söylenir?", a: ["Five thousand", "Fife Tou-sand", "Five Zero Zero Zero", "Fife hundred"], c: 1 },
+            { q: "Havacılık telsiz haberleşmesinin resmi uluslararası dili nedir?", a: ["Fransızca", "Almanca", "İngilizce", "İspanyolca"], c: 2 },
+            { q: "METAR'da 'HZ' kısaltması hangi meteorolojik olayı ifade eder?", a: ["Sis", "Kuru Pus (Haze)", "Sağanak Yağmur", "Dolu"], c: 1 },
+            { q: "METAR'da 'DZ' kısaltması ne anlama gelir?", a: ["Çiseleyen Yağmur (Drizzle)", "Yoğun Kar", "Kuru Hava", "Kuvvetli Rüzgar"], c: 0 },
+            { q: "Uçuş Seviyesi anlamına gelen kısaltma hangisidir?", a: ["ALT", "VSI", "FL", "QNH"], c: 2 },
+            { q: "Barometrik altimetrede deniz seviyesi referans basınç ayarı hangisidir?", a: ["QFE", "QNE", "QNH", "QBA"], c: 2 },
+            { q: "Telsiz iletişiminde frekans kesilmesi veya iki pilotun aynı anda konuşması durumuna ne denir?", a: ["Blocked", "Roger", "Say Again", "Wilco"], c: 0 },
+            { q: "Havacılıkta uçağın kuyruk tescili telsizde nasıl kodlanır?", a: ["Normal kelime olarak", "NATO Fonetik alfabesiyle harf harf", "Sadece sayılar okunur", "Kodlanmaz"], c: 1 },
+            { q: "Havacılıkta 6 sayısı nasıl telaffuz edilir?", a: ["Six", "Siks", "Sik-si", "Six-er"], c: 0 },
+            { q: "METAR'da 'SKC' veya 'CLR' neyi ifade eder?", a: ["Kapalı Hava", "Açık Gökyüzü (Sky Clear)", "Fırtına Uyarı", "Kar Yağışı"], c: 1 },
+            { q: "Uçağın statik hattı ile pitot tüpü arasındaki bağlantıyı koparırsanız hangi sistemler çöker?", a: ["Sadece telsiz", "Tüm elektrik sistemi", "Pitot-statik uçuş göstergeleri", "Motor performansı"], c: 2 },
+            { q: "Telsiz konuşmalarında 'BREAK' ifadesi niçin kullanılır?", a: ["Telsizi kapatmak için", "Mesajlar arası acil bölünme/geçiş sağlamak için", "Mola vermek için", "Arıza bildirmek için"], c: 1 },
+            { q: "Havacılıkta taksi yolları (A, B, C vb.) kule tarafından nasıl söylenir?", a: ["Normal harf olarak", "Fonetik alphabet kelimeleriyle (Alpha, Bravo vb.)", "Sayılarla", "Raporlanmaz"], c: 1 },
+            { q: "Havacılıkta 1 sayısı nasıl telaffuz edilir?", a: ["One", "Wun", "Van", "O-ne"], c: 1 },
+            { q: "Sayı telaffuzlarında 5,500 feet nasıl seslendirilir?", a: ["Five thousand five hundred", "Fife Tou-sand Fife Hun-dred", "Fifty five hundred", "Fife Fife Zero Zero"], c: 1 },
+            { q: "METAR raporundaki 'Z' (Zulu) harfi hangi zaman dilimini ifade eder?", a: ["Yerel Saat", "UTC (Evrensel Zaman)", "Kış Saati", "Yaz Saati"], c: 1 },
+            { q: "Dinamik basınç verisini toplayan boru düzeneğine ne ad verilir?", a: ["Statik Port", "Altimetre Kamburu", "Pitot Tüpü", "Varyometre"], c: 2 },
+            { q: "Kule 'Hold Short' dediğinde pilot ne yapmalıdır?", a: ["Piste girip kalkmalıdır", "Piste girmeden hemen önce durup beklemelidir", "Geri dönmelidir", "Hızlanmalıdır"], c: 1 },
+            { q: "Gelişmiş METAR kodlarında '140V220' neyi ifade eder?", a: ["Görüş limiti", "Rüzgarın 140° ile 220° yönleri arasında yön değiştirdiğini", "140 Knottan 220 Knoda hamle", "Bulut yükseklikleri"], c: 1 }
+        ];
+
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let isChecked = false;
+        
+        // Yanlış yapılan soruları takip edecek yeni hafıza matrisi
+        let wrongQuestionsLog = []; 
+
+        function startQuiz() {
+            score = 0;
+            currentQuestionIndex = 0;
+            isChecked = false;
+            wrongQuestionsLog = []; // Sıfırla
+            
+            let shuffled = [...questionBank].sort(() => 0.5 - Math.random());
+            currentQuestions = shuffled.slice(0, 10);
+            
+            document.getElementById("result-wrapper").style.display = "none";
+            document.getElementById("error-log-section").style.display = "none";
+            document.getElementById("quiz-wrapper").style.display = "block";
+            
+            showQuestion();
+        }
+
+        function showQuestion() {
+            isChecked = false;
+            const qData = currentQuestions[currentQuestionIndex];
+            document.getElementById("quiz-progress").innerText = `Soru: ${currentQuestionIndex + 1} / 10`;
+            document.getElementById("btn-next").innerText = "Cevabı Kontrol Et";
+            
+            let html = `
+                <div class="question-box">
+                    <div class="question-text">${currentQuestionIndex + 1}. ${qData.q}</div>
+                    <div class="options-group" id="options-block">
+            `;
+            
+            qData.a.forEach((option, idx) => {
+                html += `
+                    <label class="option-label" id="label-${idx}">
+                        <input type="radio" name="quiz-option" value="${idx}">
+                        <span>${option}</span>
+                    </label>
+                `;
+            });
+            
+            html += `</div></div>`;
+            document.getElementById("question-area").innerHTML = html;
+        }
+
+        function handleQuizAction() {
+            if (!isChecked) {
+                checkAnswer();
+            } else {
+                moveToNext();
+            }
+        }
+
+        function checkAnswer() {
+            const selected = document.querySelector('input[name="quiz-option"]:checked');
+            
+            if (!selected) {
+                alert("Lütfen bir şık işaretleyin kaptan!");
+                return;
+            }
+
+            const qData = currentQuestions[currentQuestionIndex];
+            const selectedAnswer = parseInt(selected.value);
+            const correctAnswer = qData.c;
+
+            document.getElementById("options-block").classList.add("disabled-options");
+
+            if (selectedAnswer === correctAnswer) {
+                document.getElementById(`label-${selectedAnswer}`).classList.add("correct-choice");
+                score++;
+            } else {
+                document.getElementById(`label-${selectedAnswer}`).classList.add("wrong-choice");
+                document.getElementById(`label-${correctAnswer}`).classList.add("correct-choice");
+                
+                // Yanlış yapıldıysa hata kaydına ekle
+                wrongQuestionsLog.push({
+                    question: qData.q,
+                    yourAnswer: qData.a[selectedAnswer],
+                    correctAnswer: qData.a[correctAnswer]
+                });
+            }
+
+            isChecked = true;
+
+            if (currentQuestionIndex === 9) {
+                document.getElementById("btn-next").innerText = "Testi Bitir ve Sonuçları Gör";
+            } else {
+                document.getElementById("btn-next").innerText = "Sonraki Soruya İlerle";
+            }
+        }
+
+        function moveToNext() {
+            if (currentQuestionIndex < 9) {
+                currentQuestionIndex++;
+                showQuestion();
+            } else {
+                // Sınav Bitti
+                document.getElementById("quiz-wrapper").style.display = "none";
+                document.getElementById("result-wrapper").style.display = "block";
+                
+                const basariOrani = (score / 10) * 100;
+                let feedback = "";
+                
+                if (basariOrani >= 80) feedback = "Mükemmel! Tam bir kaptan pilot performansı. 🧑‍✈️";
+                else if (basariOrani >= 50) feedback = "Güzel, ama frekansta biraz daha pratik yapmalısın. 🛩️";
+                else feedback = "Türbülanslı bir uçuş oldu, dökümanları tekrar incelemelisin. 🛑";
+
+                document.getElementById("score-text").innerHTML = `
+                    Skorunuz: <strong>${score} / 10</strong> <br>
+                    Başarı Oranı: %${basariOrani} <br><br>
+                    <em>${feedback}</em>
+                `;
+
+                // EĞER YANLIŞ SORU VARSA RAPORU OLUŞTUR VE GÖSTER
+                if (wrongQuestionsLog.length > 0) {
+                    let errorHtml = "";
+                    wrongQuestionsLog.forEach((item, index) => {
+                        errorHtml += `
+                            <div class="error-card">
+                                <div class="error-q-text">${index + 1}. ${item.question}</div>
+                                <div class="error-details">
+                                    <span class="your-ans">❌ Sizin Cevabınız: ${item.yourAnswer}</span>
+                                    <span class="corr-ans">✅ Doğru Cevap: ${item.correctAnswer}</span>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    document.getElementById("error-cards-wrapper").innerHTML = errorHtml;
+                    document.getElementById("error-log-section").style.display = "block";
+                }
+            }
+        }
+
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

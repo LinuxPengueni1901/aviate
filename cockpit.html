@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aviate // Kokpit Okuryazarlığı</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div class="grid-container">
+        <nav class="panel-sidebar">
+            <h2>Aviate Systems</h2>
+            <ul>
+                <li><a href="index.html">Dashboard</a></li>
+                <li><a href="cockpit.html" class="active">Kokpit Okuryazarlığı</a></li>
+                <li><a href="metar.html">METAR Çözücü</a></li>
+                <li><a href="radio.html">Telsiz Jargonu</a></li>
+            </ul>
+        </nav>
+
+        <main class="panel-main">
+            <h1>Kokpit Okuryazarlığı</h1>
+            <p class="subtitle">Birincil uçuş göstergelerinin telemetri analizi.</p>
+
+            <div class="lessons-grid">
+                <section class="lesson-card">
+                    <h3>ASI / Airspeed Indicator</h3>
+                    <p>Pitot-statik dinamik basınç farkı tabanlı sürat veri analizörü.</p>
+                    <button class="btn-launch" onclick="inspect('asi')">Veriyi Çek</button>
+                </section>
+                <section class="lesson-card">
+                    <h3>ALT / Altimeter</h3>
+                    <p>Barometrik statik basınç değişim katsayılı yükseklik göstergesi.</p>
+                    <button class="btn-launch" onclick="inspect('alt')">Veriyi Çek</button>
+                </section>
+                <section class="lesson-card">
+                    <h3>VSI / Vertical Speed</h3>
+                    <p>Dikey eksen statik basınç değişim hızı varyometresi.</p>
+                    <button class="btn-launch" onclick="inspect('vsi')">Veriyi Çek</button>
+                </section>
+            </div>
+
+            <section id="inspection-panel" class="info-box" style="display: none;">
+                <h2 id="ins-title"></h2>
+                <div class="data-table" style="margin-top: 15px;">
+                    <div class="table-row">
+                        <span class="table-label">Çalışma Prensibi</span>
+                        <span class="table-value" id="ins-body"></span>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        const db = {
+            asi: "Pitot tüpü dinamik basıncı ile statik hat arasındaki farkı işleyerek uçağın havaya göre olan relatif süratini üretir.",
+            alt: "Ortam barometrik basıncını referans alarak uçağın deniz seviyesinden dikey dökümantasyonunu feet biriminde sağlar.",
+            vsi: "Uçağın dikey tırmanma ve alçalma oranını, statik hücredeki basınç sızıntı hızı üzerinden ft/min olarak hesaplar."
+        };
+        function inspect(key) {
+            document.getElementById("ins-title").innerText = key.toUpperCase() + " // TELEMETRİ DETAYI";
+            document.getElementById("ins-body").innerText = db[key];
+            document.getElementById("inspection-panel").style.display = "block";
+        }
+    </script>
+</body>
+</html>
