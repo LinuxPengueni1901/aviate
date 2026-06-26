@@ -1,53 +1,62 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aviate // Kokpit Okuryazarlığı</title>
+    <title>Aviate // Cockpit Literacy</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        .lang-switcher { display: flex; gap: 5px; margin-bottom: 30px; padding: 0 12px; }
+        .btn-lang { background-color: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 6px 12px; font-family: inherit; font-size: 11px; cursor: pointer; transition: all 0.15s; font-weight: 500; }
+        .btn-lang.active-lang { border-color: var(--accent); color: #FFF; background-color: var(--surface); }
+        .lessons-grid .lesson-card { cursor: pointer; transition: border-color 0.15s, background-color 0.15s; }
+        .lessons-grid .lesson-card:hover { border-color: var(--accent); background-color: var(--surface-hover); }
+    </style>
 </head>
 <body>
 
     <div class="grid-container">
         <nav class="panel-sidebar">
             <h2>Aviate Systems</h2>
-                <ul>
-                    <li><a href="index.html">Dashboard</a></li>
-                    <li><a href="cockpit.html">Kokpit Okuryazarlığı</a></li>
-                    <li><a href="metar.html">METAR Çözücü</a></li>
-                    <li><a href="radio.html">Telsiz Jargonu</a></li>
-                    <li><a href="numbers.html">Sayı Telaffuzları</a></li>
-                    <li><a href="quiz.html">Eğitim Quizi</a></li> <!-- Yeni Eklenen -->
-                </ul>
+            <div class="lang-switcher">
+                <button class="btn-lang" onclick="setLanguage('tr')" id="btn-tr">TR</button>
+                <button class="btn-lang active-lang" onclick="setLanguage('en')" id="btn-en">EN</button>
+            </div>
+            <ul>
+                <li><a href="index.html" class="i18n" data-en="Dashboard" data-tr="Dashboard">Dashboard</a></li>
+                <li><a href="cockpit.html" class="active i18n" data-en="Cockpit Literacy" data-tr="Kokpit Okuryazarlığı">Cockpit Literacy</a></li>
+                <li><a href="metar.html" class="i18n" data-en="METAR Decoder" data-tr="METAR Çözücü">METAR Decoder</a></li>
+                <li><a href="radio.html" class="i18n" data-en="Radio Jargon" data-tr="Telsiz Jargonu">Radio Jargon</a></li>
+                <li><a href="numbers.html" class="i18n" data-en="Number Pronunciations" data-tr="Sayı Telaffuzları">Number Pronunciations</a></li>
+                <li><a href="quiz.html" class="i18n" data-en="Training Quiz" data-tr="Eğitim Quizi">Training Quiz</a></li>
+                <li><a href="dictionary.html" class="i18n" data-en="System Dictionary" data-tr="Sistem Sözlüğü">System Dictionary</a></li>
+            </ul>
         </nav>
 
         <main class="panel-main">
-            <h1>Kokpit Okuryazarlığı</h1>
-            <p class="subtitle">Birincil uçuş göstergelerinin telemetri analizi.</p>
+            <h1 class="i18n" data-en="Cockpit Literacy" data-tr="Kokpit Okuryazarlığı">Cockpit Literacy</h1>
+            <p class="subtitle i18n" data-en="Telemetry analysis of primary flight instruments (Click on card to inspect)." data-tr="Birincil uçuş göstergelerinin telemetri analizi (Detay için karta tıklayın).">Telemetry analysis of primary flight instruments (Click on card to inspect).</p>
 
             <div class="lessons-grid">
-                <section class="lesson-card">
+                <section class="lesson-card" onclick="inspect('asi')">
                     <h3>ASI / Airspeed Indicator</h3>
-                    <p>Pitot-statik dinamik basınç farkı tabanlı sürat veri analizörü.</p>
-                    <button class="btn-launch" onclick="inspect('asi')">Veriyi Çek</button>
+                    <p class="i18n" data-en="Airspeed data analyzer based on pitot-static dynamic pressure differential." data-tr="Pitot-statik dinamik basınç farkı tabanlı sürat veri analizörü.">Airspeed data analyzer based on pitot-static dynamic pressure differential.</p>
                 </section>
-                <section class="lesson-card">
+                <section class="lesson-card" onclick="inspect('alt')">
                     <h3>ALT / Altimeter</h3>
-                    <p>Barometrik statik basınç değişim katsayılı yükseklik göstergesi.</p>
-                    <button class="btn-launch" onclick="inspect('alt')">Veriyi Çek</button>
+                    <p class="i18n" data-en="Altitude indicator calibrated to barometric static pressure changes." data-tr="Barometrik ortam basıncı referanslı dikey dökümantasyon göstergesi.">Altitude indicator calibrated to barometric static pressure changes.</p>
                 </section>
-                <section class="lesson-card">
-                    <h3>VSI / Vertical Speed</h3>
-                    <p>Dikey eksen statik basınç değişim hızı varyometresi.</p>
-                    <button class="btn-launch" onclick="inspect('vsi')">Veriyi Çek</button>
+                <section class="lesson-card" onclick="inspect('vsi')">
+                    <h3>VSI / Vertical Speed Indicator</h3>
+                    <p class="i18n" data-en="Vertical axis static pressure leak rate variometer." data-tr="Dikey eksen statik basınç değişim hızı varyometresi.">Vertical axis static pressure leak rate variometer.</p>
                 </section>
             </div>
 
-            <section id="inspection-panel" class="info-box" style="display: none;">
+            <section id="inspection-panel" class="info-box" style="display: none; margin-top: 40px;">
                 <h2 id="ins-title"></h2>
                 <div class="data-table" style="margin-top: 15px;">
                     <div class="table-row">
-                        <span class="table-label">Çalışma Prensibi</span>
+                        <span class="table-label i18n" data-en="Operating Principle" data-tr="Çalışma Prensibi">Operating Principle</span>
                         <span class="table-value" id="ins-body"></span>
                     </div>
                 </div>
@@ -57,15 +66,49 @@
 
     <script>
         const db = {
-            asi: "Pitot tüpü dinamik basıncı ile statik hat arasındaki farkı işleyerek uçağın havaya göre olan relatif süratini üretir.",
-            alt: "Ortam barometrik basıncını referans alarak uçağın deniz seviyesinden dikey dökümantasyonunu feet biriminde sağlar.",
-            vsi: "Uçağın dikey tırmanma ve alçalma oranını, statik hücredeki basınç sızıntı hızı üzerinden ft/min olarak hesaplar."
+            asi: {
+                en: "Computes aircraft's relative airspeed by processing the difference between pitot tube dynamic pressure and static line atmospheric pressure.",
+                tr: "Pitot tüpü dinamik basıncı ile statik hat arasındaki farkı işleyerek uçağın havaya göre olan relatif süratini üretir."
+            },
+            alt: {
+                en: "Provides vertical documentation of the aircraft above sea level in feet, referenced to ambient barometric pressure settings.",
+                tr: "Ortam barometrik basıncını referans alarak uçağın deniz seviyesinden dikey dökümantasyonunu feet biriminde sağlar."
+            },
+            vsi: {
+                en: "Calculates the aircraft's vertical rate of climb or descent in ft/min, measured through a calibrated leak in the static chamber.",
+                tr: "Uçağın dikey tırmanma ve alçalma oranını, statik hücredeki basınç sızıntı hızı üzerinden ft/min olarak hesaplar."
+            }
         };
+
+        let currentLang = 'en';
+        let currentKey = null;
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.getElementById("btn-tr").classList.remove("active-lang");
+            document.getElementById("btn-en").classList.remove("active-lang");
+            document.getElementById("btn-" + lang).classList.add("active-lang");
+            
+            const elements = document.querySelectorAll('.i18n');
+            elements.forEach(el => {
+                const translation = el.getAttribute('data-' + lang);
+                if (translation) el.innerText = translation;
+            });
+
+            if(currentKey) {
+                document.getElementById("ins-body").innerText = db[currentKey][lang];
+            }
+        }
+
         function inspect(key) {
-            document.getElementById("ins-title").innerText = key.toUpperCase() + " // TELEMETRİ DETAYI";
-            document.getElementById("ins-body").innerText = db[key];
+            currentKey = key;
+            const suffix = currentLang === 'en' ? " // TELEMETRY DETAIL" : " // TELEMETRİ DETAYI";
+            document.getElementById("ins-title").innerText = key.toUpperCase() + suffix;
+            document.getElementById("ins-body").innerText = db[key][currentLang];
             document.getElementById("inspection-panel").style.display = "block";
         }
+
+        window.onload = function() { setLanguage('en'); };
     </script>
 </body>
 </html>

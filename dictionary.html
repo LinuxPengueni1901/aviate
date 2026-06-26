@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aviate // System Dictionary</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .lang-switcher { display: flex; gap: 5px; margin-bottom: 30px; padding: 0 12px; }
+        .btn-lang { background-color: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 6px 12px; font-family: inherit; font-size: 11px; cursor: pointer; transition: all 0.15s; font-weight: 500; }
+        .btn-lang.active-lang { border-color: var(--accent); color: #FFF; background-color: var(--surface); }
+        .lessons-grid .lesson-card { cursor: pointer; transition: border-color 0.15s, background-color 0.15s; }
+        .lessons-grid .lesson-card:hover { border-color: var(--accent); background-color: var(--surface-hover); }
+    </style>
+</head>
+<body>
+
+    <div class="grid-container">
+        <nav class="panel-sidebar">
+            <h2>Aviate Systems</h2>
+            <div class="lang-switcher">
+                <button class="btn-lang" onclick="setLanguage('tr')" id="btn-tr">TR</button>
+                <button class="btn-lang active-lang" onclick="setLanguage('en')" id="btn-en">EN</button>
+            </div>
+            <ul>
+                <li><a href="index.html" class="i18n" data-en="Dashboard" data-tr="Dashboard">Dashboard</a></li>
+                <li><a href="cockpit.html" class="i18n" data-en="Cockpit Literacy" data-tr="Kokpit Okuryazarlığı">Cockpit Literacy</a></li>
+                <li><a href="metar.html" class="i18n" data-en="METAR Decoder" data-tr="METAR Çözücü">METAR Decoder</a></li>
+                <li><a href="radio.html" class="i18n" data-en="Radio Jargon" data-tr="Telsiz Jargonu">Radio Jargon</a></li>
+                <li><a href="numbers.html" class="i18n" data-en="Number Pronunciations" data-tr="Sayı Telaffuzları">Number Pronunciations</a></li>
+                <li><a href="quiz.html" class="i18n" data-en="Training Quiz" data-tr="Eğitim Quizi">Training Quiz</a></li>
+                <li><a href="dictionary.html" class="active i18n" data-en="System Dictionary" data-tr="Sistem Sözlüğü">System Dictionary</a></li>
+            </ul>
+        </nav>
+
+        <main class="panel-main">
+            <h1 class="i18n" data-en="Integrated System Glossary" data-tr="Bütünleşik Sistem Sözlüğü">Integrated System Glossary</h1>
+            <p class="subtitle i18n" data-en="Click directly on any card to view operational descriptions without secondary actions." data-tr="Ara bir butona basmaya gerek kalmadan, detayını öğrenmek istediğiniz kartın üzerine doğrudan tıklayın.">Click directly on any card to view operational descriptions without secondary actions.</p>
+
+            <div class="lessons-grid">
+                <section class="lesson-card" onclick="inspect('asi')">
+                    <h3>ASI / Airspeed Indicator</h3>
+                    <p class="i18n" data-en="Pitot-static airspeed analyzer." data-tr="Pitot-statik dinamik sürat veri analizörü.">Pitot-static airspeed analyzer.</p>
+                </section>
+                <section class="lesson-card" onclick="inspect('wilco')">
+                    <h3>WILCO</h3>
+                    <p class="i18n" data-en="Standard radio phraseology compliance." data-tr="Standart telsiz frazeoloji onay kalıbı.">Standard radio phraseology compliance.</p>
+                </section>
+            </div>
+
+            <section id="global-inspection-panel" class="info-box" style="display: none; margin-top: 40px;">
+                <h2 id="global-title"></h2>
+                <div class="data-table" style="margin-top: 15px;">
+                    <div class="table-row">
+                        <span class="table-label" id="global-label">Description</span>
+                        <span class="table-value" id="global-body"></span>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        const dictDb = {
+            asi: {
+                en: "Measures aircraft speed relative to the surrounding air by calculating dynamic and static tracking differentials.",
+                tr: "Dinamik ve statik izleme farklarını hesaplayarak uçağın çevre havaya göre hızını ölçer."
+            },
+            wilco: {
+                en: "Acronym for 'Will Comply'. Indicates that the air traffic control message has been fully understood and action will be taken.",
+                tr: "'Will Comply' operasyonel kısaltması. ATC mesajının anlaşıldığını ve harfiyen icra edileceğini belirtir."
+            }
+        };
+
+        let currentLang = 'en';
+        let activeKey = null;
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.getElementById("btn-tr").classList.remove("active-lang");
+            document.getElementById("btn-en").classList.remove("active-lang");
+            document.getElementById("btn-" + lang).classList.add("active-lang");
+            const elements = document.querySelectorAll('.i18n');
+            elements.forEach(el => {
+                const translation = el.getAttribute('data-' + lang);
+                if (translation) el.innerText = translation;
+            });
+            if(activeKey) inspect(activeKey);
+        }
+
+        function inspect(key) {
+            activeKey = key;
+            document.getElementById("global-title").innerText = key.toUpperCase() + (currentLang === 'en' ? " // ANALYSIS" : " // İNCELEME");
+            document.getElementById("global-body").innerText = dictDb[key][currentLang];
+            document.getElementById("global-label").innerText = currentLang === 'en' ? "Description" : "Açıklama";
+            document.getElementById("global-inspection-panel").style.display = "block";
+        }
+        window.onload = function() { setLanguage('en'); };
+    </script>
+</body>
+</html>

@@ -1,51 +1,76 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aviate // Dashboard</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        .lang-switcher { display: flex; gap: 5px; margin-bottom: 30px; padding: 0 12px; }
+        .btn-lang { background-color: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 6px 12px; font-family: inherit; font-size: 11px; cursor: pointer; transition: all 0.15s; font-weight: 500; }
+        .btn-lang.active-lang { border-color: var(--accent); color: #FFF; background-color: var(--surface); }
+    </style>
 </head>
 <body>
 
     <div class="grid-container">
         <nav class="panel-sidebar">
             <h2>Aviate Systems</h2>
-                <ul>
-                    <li><a href="index.html">Dashboard</a></li>
-                    <li><a href="cockpit.html">Kokpit Okuryazarlığı</a></li>
-                    <li><a href="metar.html">METAR Çözücü</a></li>
-                    <li><a href="radio.html">Telsiz Jargonu</a></li>
-                    <li><a href="numbers.html">Sayı Telaffuzları</a></li>
-                    <li><a href="quiz.html">Eğitim Quizi</a></li> <!-- Yeni Eklenen -->
-                </ul>
+            <div class="lang-switcher">
+                <button class="btn-lang" onclick="setLanguage('tr')" id="btn-tr">TR</button>
+                <button class="btn-lang active-lang" onclick="setLanguage('en')" id="btn-en">EN</button>
+            </div>
+            <ul>
+                <li><a href="index.html" class="active i18n" data-en="Dashboard" data-tr="Dashboard">Dashboard</a></li>
+                <li><a href="cockpit.html" class="i18n" data-en="Cockpit Literacy" data-tr="Kokpit Okuryazarlığı">Cockpit Literacy</a></li>
+                <li><a href="metar.html" class="i18n" data-en="METAR Decoder" data-tr="METAR Çözücü">METAR Decoder</a></li>
+                <li><a href="radio.html" class="i18n" data-en="Radio Jargon" data-tr="Telsiz Jargonu">Radio Jargon</a></li>
+                <li><a href="numbers.html" class="i18n" data-en="Number Pronunciations" data-tr="Sayı Telaffuzları">Number Pronunciations</a></li>
+                <li><a href="quiz.html" class="i18n" data-en="Training Quiz" data-tr="Eğitim Quizi">Training Quiz</a></li>
+                <li><a href="dictionary.html" class="i18n" data-en="System Dictionary" data-tr="Sistem Sözlüğü">System Dictionary</a></li>
+            </ul>
         </nav>
 
         <main class="panel-main">
-            <h1>Eğitim Modülleri</h1>
-            <p class="subtitle">Operasyonel dökümantasyon ve pratik uçuş prosedürleri.</p>
+            <h1 class="i18n" data-en="Training Modules" data-tr="Eğitim Modülleri">Training Modules</h1>
+            <p class="subtitle i18n" data-en="Operational documentation and practical flight procedures." data-tr="Operasyonel dökümantasyon ve pratik uçuş prosedürleri.">Operational documentation and practical flight procedures.</p>
 
             <div class="lessons-grid">
                 <section class="lesson-card">
-                    <h3>01 / Kokpit Okuryazarlığı</h3>
-                    <p>Temel uçuş göstergelerinin mekanik yapıları, veri toplama yöntemleri ve anlık tarama analizleri.</p>
-                    <a href="cockpit.html" class="btn-launch">Aç</a>
+                    <h3 class="i18n" data-en="01 / Cockpit Literacy" data-tr="01 / Kokpit Okuryazarlığı">01 / Cockpit Literacy</h3>
+                    <p class="i18n" data-en="Mechanical structures, data collection methods, and real-time scan analysis of primary flight instruments." data-tr="Temel uçuş göstergelerinin mekanik yapıları, veri toplama yöntemleri ve anlık tarama analizleri.">Mechanical structures, data collection methods, and real-time scan analysis of primary flight instruments.</p>
+                    <a href="cockpit.html" class="btn-launch i18n" data-en="Open" data-tr="Aç">Open</a>
                 </section>
 
                 <section class="lesson-card">
-                    <h3>02 / METAR Çözücü</h3>
-                    <p>Havalimanı rutin meteorolojik raporlarının dize parçalama algoritmalarıyla analiz edilmesi.</p>
-                    <a href="metar.html" class="btn-launch">Aç</a>
+                    <h3 class="i18n" data-en="02 / METAR Decoder" data-tr="02 / METAR Çözücü">02 / METAR Decoder</h3>
+                    <p class="i18n" data-en="Analysis of airport routine meteorological reports using advanced parsing string algorithms." data-tr="Havalimanı rutin meteorolojik raporlarının dize parçalama algoritmalarıyla analiz edilmesi.">Analysis of airport routine meteorological reports using advanced parsing string algorithms.</p>
+                    <a href="metar.html" class="btn-launch i18n" data-en="Open" data-tr="Aç">Open</a>
                 </section>
 
                 <section class="lesson-card">
-                    <h3>03 / Telsiz Konuşmaları</h3>
-                    <p>Hava trafik kontrolörleri (ATC) ile kurulan iletişimde kullanılan uluslararası standart kalıplar.</p>
-                    <a href="radio.html" class="btn-launch">Aç</a>
+                    <h3 class="i18n" data-en="03 / Radio Communications" data-tr="03 / Telsiz Konuşmaları">03 / Radio Communications</h3>
+                    <p class="i18n" data-en="International standard phraseology patterns used in communications with Air Traffic Control (ATC)." data-tr="Hava trafik kontrolörleri (ATC) ile kurulan iletişimde kullanılan uluslararası standart kalıplar.">International standard phraseology patterns used in communications with Air Traffic Control (ATC).</p>
+                    <a href="radio.html" class="btn-launch i18n" data-en="Open" data-tr="Aç">Open</a>
                 </section>
             </div>
         </main>
     </div>
 
+    <script>
+        let currentLang = 'en';
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.getElementById("btn-tr").classList.remove("active-lang");
+            document.getElementById("btn-en").classList.remove("active-lang");
+            document.getElementById("btn-" + lang).classList.add("active-lang");
+            const elements = document.querySelectorAll('.i18n');
+            elements.forEach(el => {
+                const translation = el.getAttribute('data-' + lang);
+                if (translation) el.innerText = translation;
+            });
+        }
+        window.onload = function() { setLanguage('en'); };
+    </script>
 </body>
 </html>

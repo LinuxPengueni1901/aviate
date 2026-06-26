@@ -1,89 +1,21 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aviate // Telsiz Jargonu & Fonetik Alfabe</title>
+    <title>Aviate // Radio Jargon & Phonetic Alphabet</title>
     <link rel="stylesheet" href="css/style.css">
     <style>
-        /* Modern ve küçük dinleme butonu */
-        .btn-listen {
-            background-color: transparent;
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-            padding: 4px 10px;
-            font-family: inherit;
-            font-size: 10px;
-            text-transform: uppercase;
-            cursor: pointer;
-            margin-left: 15px;
-            transition: border-color 0.15s, color 0.15s;
-        }
-        .btn-listen:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-        .table-value {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-        }
-        /* Frazeoloji kart grid düzeni */
-        .phrase-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
-        }
-        /* Kart içi buton grubu düzeni */
-        .card-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-        .btn-listen-card {
-            background-color: transparent;
-            border: 1px solid var(--border);
-            color: var(--text-main);
-            padding: 12px 16px;
-            font-family: inherit;
-            font-size: 12px;
-            cursor: pointer;
-            transition: border-color 0.15s, color 0.15s;
-        }
-        .btn-listen-card:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-        /* Sayılar için özel kompakt grid düzeni */
-        .number-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 15px;
-            margin-bottom: 40px;
-        }
-        .number-card {
-            background-color: var(--surface);
-            border: 1px solid var(--border);
-            padding: 15px;
-            text-align: center;
-        }
-        .number-card h3 {
-            font-size: 24px;
-            color: var(--accent);
-            margin-bottom: 5px;
-        }
-        .number-card p {
-            font-size: 11px;
-            color: var(--text-muted);
-            margin-bottom: 10px;
-            text-transform: uppercase;
-        }
-        .number-card .btn-listen {
-            margin-left: 0;
-            width: 100%;
-        }
+        .lang-switcher { display: flex; gap: 5px; margin-bottom: 30px; padding: 0 12px; }
+        .btn-lang { background-color: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 6px 12px; font-family: inherit; font-size: 11px; cursor: pointer; transition: all 0.15s; font-weight: 500; }
+        .btn-lang.active-lang { border-color: var(--accent); color: #FFF; background-color: var(--surface); }
+        .phrase-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .card-actions { margin-top: 15px; display: flex; gap: 10px; }
+        .btn-listen-card { background-color: transparent; border: 1px solid var(--border); color: var(--text-main); padding: 10px 16px; font-family: inherit; font-size: 11px; cursor: pointer; transition: border-color 0.15s, color 0.15s; }
+        .btn-listen-card:hover { border-color: var(--accent); color: var(--accent); }
+        .btn-listen { background-color: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 4px 10px; font-family: inherit; font-size: 10px; text-transform: uppercase; cursor: pointer; margin-left: 15px; transition: border-color 0.15s, color 0.15s; }
+        .btn-listen:hover { border-color: var(--accent); color: var(--accent); }
+        .table-value { display: flex; justify-content: space-between; align-items: center; width: 100%; }
     </style>
 </head>
 <body>
@@ -91,91 +23,96 @@
     <div class="grid-container">
         <nav class="panel-sidebar">
             <h2>Aviate Systems</h2>
-                <ul>
-                    <li><a href="index.html">Dashboard</a></li>
-                    <li><a href="cockpit.html">Kokpit Okuryazarlığı</a></li>
-                    <li><a href="metar.html">METAR Çözücü</a></li>
-                    <li><a href="radio.html">Telsiz Jargonu</a></li>
-                    <li><a href="numbers.html">Sayı Telaffuzları</a></li>
-                    <li><a href="quiz.html">Eğitim Quizi</a></li> <!-- Yeni Eklenen -->
-                </ul>
+            <div class="lang-switcher">
+                <button class="btn-lang" onclick="setLanguage('tr')" id="btn-tr">TR</button>
+                <button class="btn-lang active-lang" onclick="setLanguage('en')" id="btn-en">EN</button>
+            </div>
+            <ul>
+                <li><a href="index.html" class="i18n" data-en="Dashboard" data-tr="Dashboard">Dashboard</a></li>
+                <li><a href="cockpit.html" class="i18n" data-en="Cockpit Literacy" data-tr="Kokpit Okuryazarlığı">Cockpit Literacy</a></li>
+                <li><a href="metar.html" class="i18n" data-en="METAR Decoder" data-tr="METAR Çözücü">METAR Decoder</a></li>
+                <li><a href="radio.html" class="active i18n" data-en="Radio Jargon" data-tr="Telsiz Jargonu">Radio Jargon</a></li>
+                <li><a href="numbers.html" class="i18n" data-en="Number Pronunciations" data-tr="Sayı Telaffuzları">Number Pronunciations</a></li>
+                <li><a href="quiz.html" class="i18n" data-en="Training Quiz" data-tr="Eğitim Quizi">Training Quiz</a></li>
+                <li><a href="dictionary.html" class="i18n" data-en="System Dictionary" data-tr="Sistem Sözlüğü">System Dictionary</a></li>
+            </ul>
         </nav>
 
         <main class="panel-main">
-            <h1>Telsiz Jargonu & Standart Frazeoloji</h1>
-            <p class="subtitle">ATC ve kokpit arası standart iletişim usulleri, sayılar ve NATO fonetik alfabesi.</p>
+            <h1 class="i18n" data-en="Radio Jargon & Standard Phraseology" data-tr="Telsiz Jargonu & Standart Frazeoloji">Radio Jargon & Standard Phraseology</h1>
+            <p class="subtitle i18n" data-en="ATC and cockpit standard communication procedures and NATO phonetics." data-tr="ATC ve kokpit arası standart iletişim usulleri ve NATO fonetik alfabesi.">ATC and cockpit standard communication procedures and NATO phonetics.</p>
             
             <div class="phrase-grid">
                 <section class="lesson-card">
                     <h3>WILCO</h3>
-                    <p>Talimatın alındığını ve harfiyen uygulanacağını belirtir.</p>
+                    <p class="i18n" data-en="Indicates that transmission is understood and will be complied with." data-tr="Talimatın alındığını, anlaşıldığını ve harfiyen uygulanacağını belirtir.">Indicates that transmission is understood and will be complied with.</p>
                     <div class="card-actions">
-                        <button class="btn-launch" onclick="radio('wilco')">Sözlük</button>
-                        <button class="btn-listen-card" onclick="playAudio('wilco')">🔊 Dinle</button>
+                        <button class="btn-listen-card i18n" data-en="📚 Dictionary" data-tr="📚 Sözlük" onclick="radio('wilco')">📚 Dictionary</button>
+                        <button class="btn-listen-card i18n" data-en="🔊 Listen" data-tr="🔊 Dinle" onclick="playAudio('wilco')">🔊 Listen</button>
                     </div>
                 </section>
                 <section class="lesson-card">
                     <h3>ROGER</h3>
-                    <p>Mesajın sorunsuz şekilde kopyalandığını doğrular.</p>
+                    <p class="i18n" data-en="Confirms that the entire transmission has been received correctly." data-tr="Mesajın sorunsuz şekilde kopyalandığını doğrular.">Confirms that the entire transmission has been received correctly.</p>
                     <div class="card-actions">
-                        <button class="btn-launch" onclick="radio('roger')">Sözlük</button>
-                        <button class="btn-listen-card" onclick="playAudio('roger')">🔊 Dinle</button>
+                        <button class="btn-listen-card i18n" data-en="📚 Dictionary" data-tr="📚 Sözlük" onclick="radio('roger')">📚 Dictionary</button>
+                        <button class="btn-listen-card i18n" data-en="🔊 Listen" data-tr="🔊 Dinle" onclick="playAudio('roger')">🔊 Listen</button>
                     </div>
                 </section>
                 <section class="lesson-card">
                     <h3>LINE UP & WAIT</h3>
-                    <p>Piste girip kalkış pozisyonunda bekleme talimatı.</p>
+                    <p class="i18n" data-en="Instruction to enter the runway and hold in position." data-tr="Piste girip kalkış pozisyonunda bekleme talimatı.">Instruction to enter the runway and hold in position.</p>
                     <div class="card-actions">
-                        <button class="btn-launch" onclick="radio('lineup')">Sözlük</button>
-                        <button class="btn-listen-card" onclick="playAudio('lineup')">🔊 Dinle</button>
+                        <button class="btn-listen-card i18n" data-en="📚 Dictionary" data-tr="📚 Sözlük" onclick="radio('lineup')">📚 Dictionary</button>
+                        <button class="btn-listen-card i18n" data-en="🔊 Listen" data-tr="🔊 Dinle" onclick="playAudio('lineup')">🔊 Listen</button>
                     </div>
                 </section>
                 <section class="lesson-card">
                     <h3>CLEARED</h3>
-                    <p>Kalkış, iniş veya yaklaşma onay kalıbı.</p>
+                    <p class="i18n" data-en="ATC authorization for takeoff, landing, or approach." data-tr="Kalkış, iniş veya yaklaşma onay kalıbı.">ATC authorization for takeoff, landing, or approach.</p>
                     <div class="card-actions">
-                        <button class="btn-launch" onclick="radio('cleared')">Sözlük</button>
-                        <button class="btn-listen-card" onclick="playAudio('cleared')">🔊 Dinle</button>
+                        <button class="btn-listen-card i18n" data-en="📚 Dictionary" data-tr="📚 Sözlük" onclick="radio('cleared')">📚 Dictionary</button>
+                        <button class="btn-listen-card i18n" data-en="🔊 Listen" data-tr="🔊 Dinle" onclick="playAudio('cleared')">🔊 Listen</button>
                     </div>
                 </section>
                 <section class="lesson-card">
                     <h3>HOLD / HOLDING</h3>
-                    <p>Mevcut pozisyonu veya rotayı koruma talimatı.</p>
+                    <p class="i18n" data-en="Instruction to maintain current position, altitude, or heading." data-tr="Mevcut pozisyonu veya rotayı koruma talimatı.">Instruction to maintain current position, altitude, or heading.</p>
                     <div class="card-actions">
-                        <button class="btn-launch" onclick="radio('hold')">Sözlük</button>
-                        <button class="btn-listen-card" onclick="playAudio('hold')">🔊 Dinle</button>
+                        <button class="btn-listen-card i18n" data-en="📚 Dictionary" data-tr="📚 Sözlük" onclick="radio('hold')">📚 Dictionary</button>
+                        <button class="btn-listen-card i18n" data-en="🔊 Listen" data-tr="🔊 Dinle" onclick="playAudio('hold')">🔊 Listen</button>
                     </div>
                 </section>
                 <section class="lesson-card">
                     <h3>SAY AGAIN</h3>
-                    <p>Son telsiz mesajının tekrar edilmesi talebi.</p>
+                    <p class="i18n" data-en="Request to repeat the last radio transmission." data-tr="Son telsiz mesajının tekrar edilmesi talebi.">Request to repeat the last radio transmission.</p>
                     <div class="card-actions">
-                        <button class="btn-launch" onclick="radio('sayagain')">Sözlük</button>
-                        <button class="btn-listen-card" onclick="playAudio('sayagain')">🔊 Dinle</button>
+                        <button class="btn-listen-card i18n" data-en="📚 Dictionary" data-tr="📚 Sözlük" onclick="radio('sayagain')">📚 Dictionary</button>
+                        <button class="btn-listen-card i18n" data-en="🔊 Listen" data-tr="🔊 Dinle" onclick="playAudio('sayagain')">🔊 Listen</button>
                     </div>
                 </section>
                 <section class="lesson-card">
                     <h3>UNABLE</h3>
-                    <p>Talimatın emniyetle uygulanamayacağını bildirme kelimesi.</p>
+                    <p class="i18n" data-en="Indicates that an instruction cannot be safely executed." data-tr="Talimatın emniyetle uygulanamayacağını bildirme kelimesi.">Indicates that an instruction cannot be safely executed.</p>
                     <div class="card-actions">
-                        <button class="btn-launch" onclick="radio('unable')">Sözlük</button>
-                        <button class="btn-listen-card" onclick="playAudio('unable')">🔊 Dinle</button>
+                        <button class="btn-listen-card i18n" data-en="📚 Dictionary" data-tr="📚 Sözlük" onclick="radio('unable')">📚 Dictionary</button>
+                        <button class="btn-listen-card i18n" data-en="🔊 Listen" data-tr="🔊 Dinle" onclick="playAudio('unable')">🔊 Listen</button>
                     </div>
                 </section>
                 <section class="lesson-card">
                     <h3>MAYDAY</h3>
-                    <p>Hayati ve ciddi tehlike içeren acil durum çağrısı.</p>
+                    <p class="i18n" data-en="Distress signal indicating imminent and serious danger." data-tr="Hayati ve ciddi tehlike içeren acil durum çağrısı.">Distress signal indicating imminent and serious danger.</p>
                     <div class="card-actions">
-                        <button class="btn-launch" onclick="radio('mayday')">Sözlük</button>
-                        <button class="btn-listen-card" onclick="playAudio('mayday')">🔊 Dinle</button>
+                        <button class="btn-listen-card i18n" data-en="📚 Dictionary" data-tr="📚 Sözlük" onclick="radio('mayday')">📚 Dictionary</button>
+                        <button class="btn-listen-card i18n" data-en="🔊 Listen" data-tr="🔊 Dinle" onclick="playAudio('mayday')">🔊 Listen</button>
                     </div>
                 </section>
                 <section class="lesson-card">
                     <h3>PAN PAN</h3>
-                    <p>Hayati olmayan ama aciliyet gerektiren durum çağrısı.</p>
+                    <p class="i18n" data-en="Urgency signal concerning the safety of aircraft or life." data-tr="Hayati olmayan ama aciliyet gerektiren durum çağrısı.">Urgency signal concerning the safety of aircraft or life.</p>
                     <div class="card-actions">
-                        <button class="btn-launch" onclick="radio('panpan')">Sözlük</button>
-                        <button class="btn-listen-card" onclick="playAudio('panpan')">🔊 Dinle</button>
+                        <button class="btn-listen-card i18n" data-en="📚 Dictionary" data-tr="📚 Sözlük" onclick="radio('panpan')">📚 Dictionary</button>
+                        <button class="btn-listen-card i18n" data-en="🔊 Listen" data-tr="🔊 Dinle" onclick="playAudio('panpan')">🔊 Listen</button>
                     </div>
                 </section>
             </div>
@@ -184,99 +121,95 @@
                 <h2 id="rad-title"></h2>
                 <div class="data-table" style="margin-top: 15px;">
                     <div class="table-row">
-                        <span class="table-label">Operasyonel Anlamı</span>
+                        <span class="table-label i18n" data-en="Operational Meaning" data-tr="Operasyonel Anlamı">Operational Meaning</span>
                         <span class="table-value" id="rad-body"></span>
                     </div>
                 </div>
             </section>
 
-            <h2>ICAO Standart Sayı Telaffuzları</h2>
-            <p class="subtitle">Parazitli frekanslarda basamakların net anlaşılması için özelleştirilmiş sayılar.</p>
-            
-            <div class="number-grid">
-                <div class="number-card"><h3>0</h3><p>ZE-RO</p><button class="btn-listen" onclick="playAudio('num0')">Dinle</button></div>
-                <div class="number-card"><h3>1</h3><p>WUN</p><button class="btn-listen" onclick="playAudio('num1')">Dinle</button></div>
-                <div class="number-card"><h3>2</h3><p>TOO</p><button class="btn-listen" onclick="playAudio('num2')">Dinle</button></div>
-                <div class="number-card"><h3>3</h3><p>TREE</p><button class="btn-listen" onclick="playAudio('num3')">Dinle</button></div>
-                <div class="number-card"><h3>4</h3><p>FOW-ER</p><button class="btn-listen" onclick="playAudio('num4')">Dinle</button></div>
-                <div class="number-card"><h3>5</h3><p>FIFE</p><button class="btn-listen" onclick="playAudio('num5')">Dinle</button></div>
-                <div class="number-card"><h3>6</h3><p>SIX</p><button class="btn-listen" onclick="playAudio('num6')">Dinle</button></div>
-                <div class="number-card"><h3>7</h3><p>SEV-EN</p><button class="btn-listen" onclick="playAudio('num7')">Dinle</button></div>
-                <div class="number-card"><h3>8</h3><p>AIT</p><button class="btn-listen" onclick="playAudio('num8')">Dinle</button></div>
-                <div class="number-card"><h3>9</h3><p>NI-NER</p><button class="btn-listen" onclick="playAudio('num9')">Dinle</button></div>
-            </div>
-
-            <h2>NATO Fonetik Alfabesi</h2>
-            <p class="subtitle">Kuyruk tescilleri, taksi yolları ve koordinat iletimlerinde kullanılan uluslararası kodlama.</p>
+            <h2 class="i18n" data-en="NATO Phonetic Alphabet" data-tr="NATO Fonetik Alfabesi">NATO Phonetic Alphabet</h2>
+            <p class="subtitle i18n" data-en="International coding standard used for registrations and coordinates." data-tr="Kuyruk tescilleri, taksi yolları ve koordinat iletimlerinde kullanılan uluslararası kodlama.">International coding standard used for registrations and coordinates.</p>
 
             <section class="info-box">
                 <div class="data-table">
-                    <div class="table-row"><span class="table-label">A</span><span class="table-value"><span>Alpha</span> <button class="btn-listen" onclick="playAudio('alpha')">Dinle</button></span></div>
-                    <div class="table-row"><span class="table-label">B</span><span class="table-value"><span>Bravo</span> <button class="btn-listen" onclick="playAudio('bravo')">Dinle</button></span></div>
-                    <div class="table-row"><span class="table-label">C</span><span class="table-value"><span>Charlie</span> <button class="btn-listen" onclick="playAudio('charlie')">Dinle</button></span></div>
-                    <div class="table-row"><span class="table-label">D</span><span class="table-value"><span>Delta</span> <button class="btn-listen" onclick="playAudio('delta')">Dinle</button></span></div>
-                    <div class="table-row"><span class="table-label">E</span><span class="table-value"><span>Echo</span> <button class="btn-listen" onclick="playAudio('echo')">Dinle</button></span></div>
-                    <div class="table-row"><span class="table-label">F</span><span class="table-value"><span>Foxtrot</span> <button class="btn-listen" onclick="playAudio('foxtrot')">Dinle</button></span></div>
-                    <div class="table-row"><span class="table-label">G</span><span class="table-value"><span>Golf</span> <button class="btn-listen" onclick="playAudio('golf')">Dinle</button></span></div>
-                    <div class="table-row"><span class="table-label">H</span><span class="table-value"><span>Hotel</span> <button class="btn-listen" onclick="playAudio('hotel')">Dinle</button></span></div>
-                    <div class="table-row"><span class="table-label">I</span><span class="table-value"><span>India</span> <button class="btn-listen" onclick="playAudio('india')">Dinle</button></span></div>
-                    <div class="table-row"><span class="table-label">J</span><span class="table-value"><span>Juliett</span> <button class="btn-listen" onclick="playAudio('juliett')">Dinle</button></span></div>
-                    <div class="table-row"><span class="table-label">K</span><span class="table-value"><span>Kilo</span> <button class="btn-listen" onclick="playAudio('kilo')">Dinle</button></span></div>
-                    <div class="table-row"><span class="table-label">L</span><span class="table-value"><span>Lima</span> <button class="btn-listen" onclick="playAudio('lima')">Dinle</button></span></div>
-                    <div class="table-row"><span class="table-label">M</span><span class="table-value"><span>Mike</span> <button class="btn-listen" onclick="playAudio('mike')">Dinle</button></span></div>
-                    <div class="table-row"><span class="table-label">N</span><span class="table-value"><span>November</span> <button class="btn-listen" onclick="playAudio('november')">Dinle</button></span></div>
-                    <div class="table-row"><span class="table-label">O</span><span class="table-value"><span>Oscar</span> <button class="btn-listen" onclick="playAudio('oscar')">Dinle</button></span></div>
-                    <div class="table-row"><span class="table-label">P</span><span class="table-value"><span>Papa</span> <button class="btn-listen" onclick="playAudio('papa')">Dinle</button></span></div>
-                    <div class="table-row"><span class="table-label">Q</span><span class="table-value"><span>Quebec</span> <button class="btn-listen" onclick="playAudio('quebec')">Dinle</button></span></div>
-                    <div class="table-row"><span class="table-label">R</span><span class="table-value"><span>Romeo</span> <button class="btn-listen" onclick="playAudio('romeo')">Dinle</button></span></div>
-                    <div class="table-row"><span class="table-label">S</span><span class="table-value"><span>Sierra</span> <button class="btn-listen" onclick="playAudio('sierra')">Dinle</button></span></div>
-                    <div class="table-row"><span class="table-label">T</span><span class="table-value"><span>Tango</span> <button class="btn-listen" onclick="playAudio('tango')">Dinle</button></span></div>
-                    <div class="table-row"><span class="table-label">U</span><span class="table-value"><span>Uniform</span> <button class="btn-listen" onclick="playAudio('uniform')">Dinle</button></span></div>
-                    <div class="table-row"><span class="table-label">V</span><span class="table-value"><span>Victor</span> <button class="btn-listen" onclick="playAudio('victor')">Dinle</button></span></div>
-                    <div class="table-row"><span class="table-label">W</span><span class="table-value"><span>Whiskey</span> <button class="btn-listen" onclick="playAudio('whiskey')">Dinle</button></span></div>
-                    <div class="table-row"><span class="table-label">X</span><span class="table-value"><span>X-ray</span> <button class="btn-listen" onclick="playAudio('xray')">Dinle</button></span></div>
-                    <div class="table-row"><span class="table-label">Y</span><span class="table-value"><span>Yankee</span> <button class="btn-listen" onclick="playAudio('yankee')">Dinle</button></span></div>
-                    <div class="table-row"><span class="table-label">Z</span><span class="table-value"><span>Zulu</span> <button class="btn-listen" onclick="playAudio('zulu')">Dinle</button></span></div>
+                    <div class="table-row"><span class="table-label">A</span><span class="table-value"><span>Alpha</span> <button class="btn-listen i18n" data-en="Listen" data-tr="Dinle" onclick="playAudio('alpha')">Listen</button></span></div>
+                    <div class="table-row"><span class="table-label">B</span><span class="table-value"><span>Bravo</span> <button class="btn-listen i18n" data-en="Listen" data-tr="Dinle" onclick="playAudio('bravo')">Listen</button></span></div>
+                    <div class="table-row"><span class="table-label">C</span><span class="table-value"><span>Charlie</span> <button class="btn-listen i18n" data-en="Listen" data-tr="Dinle" onclick="playAudio('charlie')">Listen</button></span></div>
+                    <div class="table-row"><span class="table-label">D</span><span class="table-value"><span>Delta</span> <button class="btn-listen i18n" data-en="Listen" data-tr="Dinle" onclick="playAudio('delta')">Listen</button></span></div>
+                    <div class="table-row"><span class="table-label">E</span><span class="table-value"><span>Echo</span> <button class="btn-listen i18n" data-en="Listen" data-tr="Dinle" onclick="playAudio('echo')">Listen</button></span></div>
+                    <div class="table-row"><span class="table-label">F</span><span class="table-value"><span>Foxtrot</span> <button class="btn-listen i18n" data-en="Listen" data-tr="Dinle" onclick="playAudio('foxtrot')">Listen</button></span></div>
+                    <div class="table-row"><span class="table-label">G</span><span class="table-value"><span>Golf</span> <button class="btn-listen i18n" data-en="Listen" data-tr="Dinle" onclick="playAudio('golf')">Listen</button></span></div>
+                    <div class="table-row"><span class="table-label">H</span><span class="table-value"><span>Hotel</span> <button class="btn-listen i18n" data-en="Listen" data-tr="Dinle" onclick="playAudio('hotel')">Listen</button></span></div>
+                    <div class="table-row"><span class="table-label">I</span><span class="table-value"><span>India</span> <button class="btn-listen i18n" data-en="Listen" data-tr="Dinle" onclick="playAudio('india')">Listen</button></span></div>
+                    <div class="table-row"><span class="table-label">J</span><span class="table-value"><span>Juliett</span> <button class="btn-listen i18n" data-en="Listen" data-tr="Dinle" onclick="playAudio('juliett')">Listen</button></span></div>
+                    <div class="table-row"><span class="table-label">K</span><span class="table-value"><span>Kilo</span> <button class="btn-listen i18n" data-en="Listen" data-tr="Dinle" onclick="playAudio('kilo')">Listen</button></span></div>
+                    <div class="table-row"><span class="table-label">L</span><span class="table-value"><span>Lima</span> <button class="btn-listen i18n" data-en="Listen" data-tr="Dinle" onclick="playAudio('lima')">Listen</button></span></div>
+                    <div class="table-row"><span class="table-label">M</span><span class="table-value"><span>Mike</span> <button class="btn-listen i18n" data-en="Listen" data-tr="Dinle" onclick="playAudio('mike')">Listen</button></span></div>
+                    <div class="table-row"><span class="table-label">N</span><span class="table-value"><span>November</span> <button class="btn-listen i18n" data-en="Listen" data-tr="Dinle" onclick="playAudio('november')">Listen</button></span></div>
+                    <div class="table-row"><span class="table-label">O</span><span class="table-value"><span>Oscar</span> <button class="btn-listen i18n" data-en="Listen" data-tr="Dinle" onclick="playAudio('oscar')">Listen</button></span></div>
+                    <div class="table-row"><span class="table-label">P</span><span class="table-value"><span>Papa</span> <button class="btn-listen i18n" data-en="Listen" data-tr="Dinle" onclick="playAudio('papa')">Listen</button></span></div>
+                    <div class="table-row"><span class="table-label">Q</span><span class="table-value"><span>Quebec</span> <button class="btn-listen i18n" data-en="Listen" data-tr="Dinle" onclick="playAudio('quebec')">Listen</button></span></div>
+                    <div class="table-row"><span class="table-label">R</span><span class="table-value"><span>Romeo</span> <button class="btn-listen i18n" data-en="Listen" data-tr="Dinle" onclick="playAudio('romeo')">Listen</button></span></div>
+                    <div class="table-row"><span class="table-label">S</span><span class="table-value"><span>Sierra</span> <button class="btn-listen i18n" data-en="Listen" data-tr="Dinle" onclick="playAudio('sierra')">Listen</button></span></div>
+                    <div class="table-row"><span class="table-label">T</span><span class="table-value"><span>Tango</span> <button class="btn-listen i18n" data-en="Listen" data-tr="Dinle" onclick="playAudio('tango')">Listen</button></span></div>
+                    <div class="table-row"><span class="table-label">U</span><span class="table-value"><span>Uniform</span> <button class="btn-listen i18n" data-en="Listen" data-tr="Dinle" onclick="playAudio('uniform')">Listen</button></span></div>
+                    <div class="table-row"><span class="table-label">V</span><span class="table-value"><span>Victor</span> <button class="btn-listen i18n" data-en="Listen" data-tr="Dinle" onclick="playAudio('victor')">Listen</button></span></div>
+                    <div class="table-row"><span class="table-label">W</span><span class="table-value"><span>Whiskey</span> <button class="btn-listen i18n" data-en="Listen" data-tr="Dinle" onclick="playAudio('whiskey')">Listen</button></span></div>
+                    <div class="table-row"><span class="table-label">X</span><span class="table-value"><span>X-ray</span> <button class="btn-listen i18n" data-en="Listen" data-tr="Dinle" onclick="playAudio('xray')">Listen</button></span></div>
+                    <div class="table-row"><span class="table-label">Y</span><span class="table-value"><span>Yankee</span> <button class="btn-listen i18n" data-en="Listen" data-tr="Dinle" onclick="playAudio('yankee')">Listen</button></span></div>
+                    <div class="table-row"><span class="table-label">Z</span><span class="table-value"><span>Zulu</span> <button class="btn-listen i18n" data-en="Listen" data-tr="Dinle" onclick="playAudio('zulu')">Listen</button></span></div>
                 </div>
             </section>
         </main>
     </div>
 
     <script>
-        // Telsiz Terimleri Açıklama Veritabanı
         const rDb = {
-            wilco: "Verilen talimatın alındığını, anlaşıldığını ve harfiyen icra edileceğini beyan eder.",
-            roger: "Alınan mesajın tamamının sorunsuz bir şekilde kopyalandığını doğrular; aksiyon taahhüdü içermez.",
-            lineup: "Piste girip kalkış pozisyonu al ama kalkış izni gelene kadar orada emniyetle bekle komutudur.",
-            cleared: "Belirtilen eylemin kontrolör tarafından onaylandığını ve emniyetli olduğunu belirtir.",
-            hold: "Mevcut pozisyonu, irtifayı veya rotayı ikinci bir emre kadar muhafaza etme talimatıdır.",
-            sayagain: "Telsiz mesajının anlaşılamadığı durumlarda, mesajın tekrar edilmesini istemek için kullanılır.",
-            unable: "Hava şartları veya operasyonel kısıtlar nedeniyle talimatın yerine getirilemeyeceğini bildirir.",
-            mayday: "Uçakta ve mürettebatta hayati tehlike olduğunu belirten uluslararası mutlak acil durum çağrısıdır.",
-            panpan: "Uçakta acil bir durum olduğunu ancak hayati tehlikenin henüz oluşmadığını bildiren çağrıdır."
+            wilco: { en: "Instruction received, understood, and will be complied with completely.", tr: "Verilen talimatın alındığını, anlaşıldığını ve harfiyen icra edileceğini beyan eder." },
+            roger: { en: "Confirms message received without issues; no commitment to action.", tr: "Alınan mesajın tamamının sorunsuz bir şekilde kopyalandığını doğrular." },
+            lineup: { en: "Enter runway and hold in position, wait for final takeoff clearance.", tr: "Piste girip kalkış pozisyonu al ama kalkış izni gelene kadar orada emniyetle bekle." },
+            cleared: { en: "Authorization from ATC for the specified action under safe parameters.", tr: "Belirtilen eylemin kontrolör tarafından onaylandığını ve emniyetli olduğunu belirtir." },
+            hold: { en: "Instruction to maintain current position, altitude, or routing.", tr: "Mevcut pozisyonu, irtifayı veya rotayı ikinci bir emre kadar muhafaza etme talimatıdır." },
+            sayagain: { en: "Request used when a transmission needs to be repeated.", tr: "Telsiz mesajının anlaşılamadığı durumlarda, mesajın tekrar edilmesini istemek için kullanılır." },
+            unable: { en: "Indicates that a given instruction cannot be safely executed.", tr: "Hava şartları veya operasyonel kısıtlar nedeniyle talimatın yerine getirilemeyeceğini bildirir." },
+            mayday: { en: "International distress signal indicating immediate and serious danger.", tr: "Uçakta ve mürettebatta hayati tehlike olduğunu belirten uluslararası mutlak acil durum çağrısıdır." },
+            panpan: { en: "International urgency signal concerning safety but no immediate danger.", tr: "Uçakta acil bir durum olduğunu ancak hayati tehlikenin henüz oluşmadığını bildiren çağrıdır." }
         };
 
+        let currentLang = 'en';
+        let activeKey = null;
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.getElementById("btn-tr").classList.remove("active-lang");
+            document.getElementById("btn-en").classList.remove("active-lang");
+            document.getElementById("btn-" + lang).classList.add("active-lang");
+            
+            const elements = document.querySelectorAll('.i18n');
+            elements.forEach(el => {
+                const translation = el.getAttribute('data-' + lang);
+                if (translation) el.innerText = translation;
+            });
+
+            if(activeKey) radio(activeKey);
+        }
+
         function radio(key) {
-            document.getElementById("rad-title").innerText = key.toUpperCase() + " // STANDART FRAZEOLOJİ";
-            document.getElementById("rad-body").innerText = rDb[key];
+            activeKey = key;
+            const suffix = currentLang === 'en' ? " // PHRASEOLOGY DETAIL" : " // STANDART FRAZEOLOJİ";
+            document.getElementById("rad-title").innerText = key.toUpperCase() + suffix;
+            document.getElementById("rad-body").innerText = rDb[key][currentLang];
             document.getElementById("radio-panel").style.display = "block";
         }
 
-        // Ortak Ses Oynatma Sistemi
         let currentAudio = null;
-
         function playAudio(fileName) {
-            if (currentAudio) {
-                currentAudio.pause();
-                currentAudio.currentTime = 0;
-            }
-            
+            if (currentAudio) { currentAudio.pause(); currentAudio.currentTime = 0; }
             currentAudio = new Audio(`audio/${fileName}.mp3`);
-            
-            currentAudio.play().catch(error => {
-                console.log(`Ses dosyası tetiklenemedi: audio/${fileName}.mp3 // Kontrol ediniz.`);
-            });
+            currentAudio.play().catch(e => console.log("Audio load error"));
         }
+
+        window.onload = function() { setLanguage('en'); };
     </script>
 </body>
 </html>
